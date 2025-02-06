@@ -9,12 +9,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import { BarcodeScanner } from './components/BarcodeScanner';
 import { CameraEnhancer, DecodedBarcodesResult, LicenseManager } from 'dynamsoft-capture-vision-react-native';
+import { BookLogger } from './components/BookLogger';
 
 function App(): React.JSX.Element {
-  const [isScanning, setIsScanning] = React.useState(false);
-  const [barcodeText, setBarcodeText] = React.useState('');
+  const [isLogging, setIsLogging] = React.useState(false);
   useEffect(()=>{
     LicenseManager.initLicense('DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9')
     .then(()=>{/*Init license successfully.*/})
@@ -22,30 +21,25 @@ function App(): React.JSX.Element {
     CameraEnhancer.requestCameraPermission();
   },[]);
 
-  const toggleScanning = () => {
-    setIsScanning(!isScanning);
+  const toggleLogging = () => {
+    setIsLogging(!isLogging);
   };
 
-  const onScanned = (result:DecodedBarcodesResult) => {
-    if (result.items && result.items.length > 0) {
-      console.log(result.items[0].text);
-      toggleScanning();
-      setBarcodeText(result.items[0].text);
-    }
-  };
+  const onCanceled = () => {
+    toggleLogging();
+  }
+
+  const onSaved = () => {
+    toggleLogging();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {isScanning &&
+      {isLogging &&
       <>
-        <BarcodeScanner
-          onScanned={onScanned}
-        />
-        <View style={styles.controls}>
-          <Button title="Stop Scanning" onPress={toggleScanning}/>
-        </View>
+        <BookLogger onCanceled={onCanceled} onSaved={onSaved} />
       </>}
-      {!isScanning &&
+      {!isLogging &&
         <View style={styles.home}>
           <View style={styles.header}>
             <Text style={styles.title}>ISBN Scanner</Text>
@@ -55,9 +49,9 @@ function App(): React.JSX.Element {
             </ScrollView>
           </View>
           <View style={[styles.bottomBar, styles.elevation, styles.shadowProp]}>
-            <Pressable onPress={()=>toggleScanning()}>
+            <Pressable onPress={()=>toggleLogging()}>
               <View style={styles.circle}>
-                <Text style={styles.buttonText}>SCAN</Text>
+                <Text style={styles.buttonText}>NEW</Text>
               </View>
             </Pressable>
           </View>
