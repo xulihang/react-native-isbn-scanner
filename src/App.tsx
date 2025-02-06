@@ -44,6 +44,7 @@ function App(): React.JSX.Element {
 
   const onSaved = () => {
     toggleLogging();
+    listBooks();
   }
 
   const bookCardPressed = (book:Book) => {
@@ -83,7 +84,10 @@ function App(): React.JSX.Element {
             </ScrollView>
           </View>
           <View style={[styles.bottomBar, styles.elevation, styles.shadowProp]}>
-            <Pressable onPress={()=>toggleLogging()}>
+            <Pressable onPress={()=>{
+              setSelectedBook(undefined);
+              toggleLogging()
+            }}>
               <View style={styles.circle}>
                 <Text style={styles.buttonText}>NEW</Text>
               </View>
