@@ -79,7 +79,9 @@ function App(): React.JSX.Element {
           <View style={styles.content}>
             <ScrollView>
               {books.map(book => (
-                <BookCard key={"key-"+book.ISBN} book={book} onPressed={()=>{bookCardPressed(book)}}/>
+                <View style={styles.bookcard}>
+                  <BookCard key={"key-"+book.ISBN} book={book} onPressed={()=>{bookCardPressed(book)}}/>
+                </View>
               ))}
             </ScrollView>
           </View>
@@ -154,6 +156,10 @@ const styles = StyleSheet.create({
   content: {
     padding:10,
     height:getContentHeight(),
+  },
+  bookcard:{
+    height: 150,
+    marginBottom: 10,
   },
   controls:{
     position:'absolute',
