@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Button,
   Dimensions,
+  Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -11,15 +12,27 @@ import {
 } from 'react-native';
 import { CameraEnhancer, DecodedBarcodesResult, LicenseManager } from 'dynamsoft-capture-vision-react-native';
 import { BookLogger } from './components/BookLogger';
+import { Book, BookManager } from './utils/BookManager';
+import { BookCard } from './components/BookCard';
 
 function App(): React.JSX.Element {
   const [isLogging, setIsLogging] = React.useState(false);
+  const [books,setBooks] = React.useState<Book[]>([]);
+  const [selectedBook,setSelectedBook] = React.useState<Book|undefined>();
+  const [modalVisible,setModalVisible] = React.useState(false);
   useEffect(()=>{
     LicenseManager.initLicense('DLS2eyJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSJ9')
     .then(()=>{/*Init license successfully.*/})
     .catch(error => console.error('Init License failed.', error));
     CameraEnhancer.requestCameraPermission();
+    listBooks();
   },[]);
+
+  const listBooks = () => {
+    BookManager.listItems().then((items)=>{
+      setBooks(items);
+    })
+  }
 
   const toggleLogging = () => {
     setIsLogging(!isLogging);
@@ -33,11 +46,29 @@ function App(): React.JSX.Element {
     toggleLogging();
   }
 
+  const bookCardPressed = (book:Book) => {
+    console.log(book);
+    setSelectedBook(book);
+    setModalVisible(true);
+  }
+
+  const performAction = async (action:'open'|'delete') => {
+    setModalVisible(false);
+    if (action === 'open') {
+      toggleLogging();
+    }else{
+      if (selectedBook) {
+        await BookManager.deleteItem(selectedBook.ISBN);
+        listBooks();
+      }
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {isLogging &&
       <>
-        <BookLogger onCanceled={onCanceled} onSaved={onSaved} />
+        <BookLogger book={selectedBook} onCanceled={onCanceled} onSaved={onSaved} />
       </>}
       {!isLogging &&
         <View style={styles.home}>
@@ -46,6 +77,9 @@ function App(): React.JSX.Element {
           </View>
           <View style={styles.content}>
             <ScrollView>
+              {books.map(book => (
+                <BookCard key={"key-"+book.ISBN} book={book} onPressed={()=>{bookCardPressed(book)}}/>
+              ))}
             </ScrollView>
           </View>
           <View style={[styles.bottomBar, styles.elevation, styles.shadowProp]}>
@@ -57,6 +91,31 @@ function App(): React.JSX.Element {
           </View>
         </View>
       }
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalInfoText}>Please select an action:</Text>
+            <View style={{flexDirection:"row"}}>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => performAction("open")}>
+                <Text style={styles.modalButtonText}>Open</Text>
+              </Pressable>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => performAction("delete")}>
+                <Text style={styles.modalButtonText}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -132,6 +191,43 @@ const styles = StyleSheet.create({
   buttonText:{
     alignSelf:"center",
     color:"white",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalButton: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#2196F3',
+    margin:5,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalInfoText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 

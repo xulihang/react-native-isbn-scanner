@@ -19,6 +19,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 export interface LoggerProps{
   onSaved?: () => void;
   onCanceled?: () => void;
+  book?:Book;
 }
 
 export function BookLogger(props:LoggerProps): React.JSX.Element {
@@ -32,6 +33,12 @@ export function BookLogger(props:LoggerProps): React.JSX.Element {
       ISBN:""
     }
   );
+
+  useEffect(()=>{
+    if (props.book) {
+      setBook(props.book);
+    }
+  },[]);
 
   const toggleScanning = () => {
     setIsScanning(!isScanning);
