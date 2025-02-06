@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import {
   Button,
+  Dimensions,
+  Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -48,16 +51,24 @@ function App(): React.JSX.Element {
             <Text style={styles.title}>ISBN Scanner</Text>
           </View>
           <View style={styles.content}>
-            <Button title="Start Scanning" onPress={toggleScanning}/>
-            {barcodeText &&
-              <Text>{'Result: ' + barcodeText}</Text>
-            }
+            <ScrollView>
+            </ScrollView>
           </View>
-
+          <View style={[styles.bottomBar, styles.elevation, styles.shadowProp]}>
+            <Pressable onPress={()=>toggleScanning()}>
+              <View style={styles.circle}>
+                <Text style={styles.buttonText}>SCAN</Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
       }
     </SafeAreaView>
   );
+}
+
+const getContentHeight = () => {
+  return Dimensions.get("window").height - 95;
 }
 
 const styles = StyleSheet.create({
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   home:{
-    alignItems:'center',
+    flex:1,
   },
   header:{
     width:'100%',
@@ -85,6 +96,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding:10,
+    height:getContentHeight(),
   },
   controls:{
     position:'absolute',
@@ -94,6 +106,38 @@ const styles = StyleSheet.create({
   },
   button:{
     width: '50%',
+  },
+  bottomBar:{
+    position:'absolute',
+    bottom:0,
+    left:0,
+    width:'100%',
+    height: 45,
+    flexDirection:"row",
+    justifyContent:"center",
+    backgroundColor:"white",
+  },
+  shadowProp: {
+    shadowColor: '#171717',
+    shadowOffset: {width: 2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  elevation: {
+    elevation: 20,
+    shadowColor: '#52006A',
+  },
+  circle: {
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
+    backgroundColor: "rgb(120,190,250)",
+    top:-25,
+    justifyContent:"center",
+  },
+  buttonText:{
+    alignSelf:"center",
+    color:"white",
   },
 });
 
