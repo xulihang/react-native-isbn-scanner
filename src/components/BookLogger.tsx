@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Button,
   Image,
+  Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -24,6 +26,7 @@ export interface LoggerProps{
 
 export function BookLogger(props:LoggerProps): React.JSX.Element {
   const [isScanning, setIsScanning] = React.useState(false);
+  const [isFetching,setIsFetching] = React.useState(false);
   const [book,setBook] = React.useState<Book>(
     {
       imageBase64:"",
@@ -62,6 +65,7 @@ export function BookLogger(props:LoggerProps): React.JSX.Element {
   };
 
   const fetchBookInfo = async (ISBN:string) => {
+    setIsFetching(true);
     try {
       const response = await fetch(
         'https://www.googleapis.com/books/v1/volumes?q=isbn:'+ISBN,
@@ -81,8 +85,10 @@ export function BookLogger(props:LoggerProps): React.JSX.Element {
       }
       await fetchImageCover(newBook,bookItem);
       setBook(newBook);
+      setIsFetching(false);
     } catch (error) {
-      Alert.alert("error",error as string);
+      setIsFetching(false);
+      Alert.alert("error",JSON.stringify(error));
     }
   }
 
@@ -217,6 +223,9 @@ export function BookLogger(props:LoggerProps): React.JSX.Element {
           <View style={styles.buttons}>
             <Button onPress={save} title="Save"/>
             <Button onPress={cancel} title="Cancel"/>
+            {isFetching && (
+              <ActivityIndicator size="large" />
+            )}
           </View>
         </ScrollView>
       }

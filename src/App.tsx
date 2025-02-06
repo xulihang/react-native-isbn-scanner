@@ -79,8 +79,8 @@ function App(): React.JSX.Element {
           <View style={styles.content}>
             <ScrollView>
               {books.map(book => (
-                <View style={styles.bookcard}>
-                  <BookCard key={"key-"+book.ISBN} book={book} onPressed={()=>{bookCardPressed(book)}}/>
+                <View style={styles.bookcard} key={"key-"+book.ISBN}>
+                  <BookCard book={book} onPressed={()=>{bookCardPressed(book)}}/>
                 </View>
               ))}
             </ScrollView>
