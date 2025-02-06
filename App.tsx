@@ -44,11 +44,16 @@ function App(): React.JSX.Element {
       </>}
       {!isScanning &&
         <View style={styles.home}>
-          <Text>ISBN Scanner</Text>
-          <Button title="Start Scanning" onPress={toggleScanning}/>
-          {barcodeText &&
-            <Text>{'Result: ' + barcodeText}</Text>
-          }
+          <View style={styles.header}>
+            <Text style={styles.title}>ISBN Scanner</Text>
+          </View>
+          <View style={styles.content}>
+            <Button title="Start Scanning" onPress={toggleScanning}/>
+            {barcodeText &&
+              <Text>{'Result: ' + barcodeText}</Text>
+            }
+          </View>
+
         </View>
       }
     </SafeAreaView>
@@ -61,6 +66,25 @@ const styles = StyleSheet.create({
   },
   home:{
     alignItems:'center',
+  },
+  header:{
+    width:'100%',
+    height: 50,
+    backgroundColor:'white',
+    elevation: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    justifyContent:'center',
+  },
+  title:{
+    color:'black',
+    fontSize:18,
+    padding:10,
+  },
+  content: {
+    padding:10,
   },
   controls:{
     position:'absolute',
