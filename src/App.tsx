@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import {
-  Button,
   Dimensions,
   Modal,
   Pressable,
@@ -10,7 +9,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { CameraEnhancer, DecodedBarcodesResult, LicenseManager } from 'dynamsoft-capture-vision-react-native';
+import { CameraEnhancer, LicenseManager } from 'dynamsoft-capture-vision-react-native';
 import { BookLogger } from './components/BookLogger';
 import { Book, BookManager } from './utils/BookManager';
 import { BookCard } from './components/BookCard';

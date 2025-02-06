@@ -4,7 +4,6 @@ import {
   Alert,
   Button,
   Image,
-  Modal,
   Pressable,
   SafeAreaView,
   ScrollView,

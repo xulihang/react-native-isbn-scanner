@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-  Alert,
-  Button,
   Image,
   Pressable,
-  SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import { BarcodeScanner } from './BarcodeScanner';
-import { DecodedBarcodesResult } from 'dynamsoft-capture-vision-react-native';
-import { Book, BookManager } from '../utils/BookManager';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { Book } from '../utils/BookManager';
 
 export interface BookCardProps{
   onPressed?: () => void;
